@@ -15,7 +15,7 @@ class list {
         std::unique_ptr<node> next; // node owns next node
         node* prev; // always valid because we are owned by someone
 
-        node() : ptr(nullptr), next(nullptr), prev(nullptr);
+        node() : ptr(nullptr), next(nullptr), prev(nullptr) {};
         explicit node(const T& data) : ptr(std::make_unique<T>(data)), next(nullptr), prev(nullptr) {};
     };
 
@@ -24,7 +24,6 @@ class list {
     size_t sz;
 
 public:
-    // TODO make noexcept
     list() : head(nullptr), tail(nullptr), sz(0) {}
 
     void push_back(const T& data) {
@@ -33,7 +32,7 @@ public:
             tail = head.get();
         }
 
-        std::unique_ptr tmp_node = std::make_unique<node>(data);
+        std::unique_ptr<node> tmp_node = std::make_unique<node>(data);
         if (sz == 0) {// list is empty
             tmp_node->next = std::move(head);
             head = std::move(tmp_node);
@@ -43,9 +42,9 @@ public:
             tmp_node->next = std::move(last->next);
             tmp_node->prev = last;
             last->next = std::move(tmp_node);
-            tail = last->next.get();
+            tail->prev = last->next.get();
         }
-        --sz;
+        ++sz;
     }
 
     void pop_back() {
@@ -53,7 +52,9 @@ public:
         // same as if (tail == nullptr || tail->prev == nullptr) { return; }
 
         tail->prev = tail->prev->prev;
-        tail->prev->next = std::move(tail->prev->next->next);
+        if (tail->prev != nullptr) {
+            tail->prev->next = std::move(tail->prev->next->next);
+        }
         --sz;
     }
 
