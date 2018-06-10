@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <type_traits>
 
 struct no_def {
     no_def() = delete;
@@ -15,7 +16,7 @@ struct no_def {
 };
 
 int main() {
-
+    static_assert(std::is_default_constructible<no_def>() == false, "Something is wrong");
     {
         list<int> lst;
 

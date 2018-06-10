@@ -88,13 +88,22 @@ class list {
     node* tail;
     size_t sz;
 
+    void insert(node* nd, const T& val) {
+        std::unique_ptr<node> tmp_node = std::make_unique<node>(val);
+        node* last = nd->prev;
+        tmp_node->next = std::move(last->next);
+        tmp_node->prev = last;
+        last->next = std::move(tmp_node);
+        nd->prev = last->next.get();
+    }
+
 public:
     using iterator = iterator_impl<false>;
     using const_iterator = iterator_impl<true>;
     using reverse_iterator = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-    list() : head(nullptr), tail(nullptr), sz(0) {}
+    list() noexcept : head(nullptr), tail(nullptr), sz(0) {}
 
     list(const list<T>& other) :list() {
         for (const auto& val : other) { this->push_back(val); }
@@ -111,24 +120,19 @@ public:
             tail = head.get();
         }
 
-        std::unique_ptr<node> tmp_node = std::make_unique<node>(data);
-        if (sz == 0) {// list is empty
+        if (sz == 0) { // list is empty
+            std::unique_ptr<node> tmp_node = std::make_unique<node>(data);
             tmp_node->next = std::move(head);
             head = std::move(tmp_node);
             tail->prev = head.get();
         } else { // we have elements
-            node* last = tail->prev;
-            tmp_node->next = std::move(last->next);
-            tmp_node->prev = last;
-            last->next = std::move(tmp_node);
-            tail->prev = last->next.get();
+            insert(tail, data);
         }
         ++sz;
     }
 
     void pop_back() {
-        if (sz == 0) { return; }
-        // same as if (tail == nullptr || tail->prev == nullptr) { return; }
+        if (sz == 0) { return; } // same as if (tail == nullptr || tail->prev == nullptr) { return; }
 
         tail->prev = tail->prev->prev;
         if (tail->prev != nullptr) {
@@ -138,16 +142,12 @@ public:
     }
 
     T& back() {
-        assert(sz != 0);
-        // same as assert(tail != nullptr && tail->prev != nullptr);
-
+        assert(sz != 0); // same as assert(tail != nullptr && tail->prev != nullptr);
         return *(tail->prev->data);
     }
 
     const T& back() const {
-        assert(sz != 0);
-        // same as assert(tail != nullptr && tail->prev != nullptr);
-
+        assert(sz != 0); // same as assert(tail != nullptr && tail->prev != nullptr);
         return *(tail->prev->data);
     }
 
@@ -184,13 +184,11 @@ public:
 
     T& front() {
         assert(sz != 0);
-
         return *(head->data);
     }
 
     const T& front() const {
         assert(sz != 0);
-
         return *(head->data);
     }
 
@@ -248,12 +246,7 @@ public:
         } else if (ptr->prev == nullptr) {
             push_front(val);
         } else {
-            std::unique_ptr<node> tmp_node = std::make_unique<node>(val);
-            node* last = ptr->prev;
-            tmp_node->next = std::move(last->next);
-            tmp_node->prev = last;
-            last->next = std::move(tmp_node);
-            ptr->prev = last->next.get();
+            insert(ptr, val);
             sz++;
         }
         return iterator(ptr->prev);
