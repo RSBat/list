@@ -43,6 +43,15 @@ class list {
         iterator_impl() = default;
         explicit iterator_impl(node* ptr) : ptr(ptr) {}
 
+        template<bool is_other_const, typename  U = std::enable_if_t<is_const || !is_other_const>>
+        iterator_impl(const iterator_impl<is_other_const>& other) :ptr(other.ptr) {}
+
+        template<bool is_other_const>
+        std::enable_if_t<is_const || !is_other_const, iterator_impl&> operator=(const iterator_impl<is_other_const>& other) {
+            ptr = other.ptr;
+            return *this;
+        }
+
         iterator_impl operator++(int) {
             iterator_impl tmp = *this;
             ptr = (ptr->next).get();
@@ -273,8 +282,7 @@ public:
 
     iterator erase(const_iterator first, const_iterator second) {
         while (first != second) { // can be optimized
-            iterator it = erase(first);
-            first = const_iterator(it.ptr);
+            first = erase(first);
         }
 
         return iterator(first.ptr);
@@ -282,8 +290,8 @@ public:
 
     void splice(const_iterator pos, list& other, const_iterator first, const_iterator last) {
         while (first != last) { // can be optimmized
-            pos = ++const_iterator(insert(pos, *first).ptr);
-            first = const_iterator(other.erase(first).ptr);
+            pos = ++insert(pos, *first);
+            first = other.erase(first);
         }
     }
 

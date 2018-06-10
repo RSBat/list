@@ -18,6 +18,8 @@ struct no_def {
 int main() {
     static_assert(std::is_default_constructible<no_def>() == false, "Something is wrong");
     {
+        std::cout << "---1---\n\n";
+
         list<int> lst;
 
         for (int i = 0; i < 10; i++) {
@@ -30,9 +32,13 @@ int main() {
             assert(i == lst.back());
             lst.pop_back();
         }
+
+        std::cout << "---1---\n\n";
     }
 
     {
+        std::cout << "---2---\n\n";
+
         list<std::string> string_list;
         string_list.push_front(" ");
         string_list.push_back("world! ");
@@ -61,9 +67,13 @@ int main() {
             string_list.pop_front();
         }
         std::cout << std::endl;
+
+        std::cout << "---2---\n\n";
     }
 
     {
+        std::cout << "---3---\n\n";
+
         list<list<std::string>> mlist;
         for (int i = 0; i < 10; i++) {
             list<std::string> tmp;
@@ -79,9 +89,13 @@ int main() {
             }
             std::cout << std::endl;
         }
+
+        std::cout << "---3---\n\n";
     }
 
     {
+        std::cout << "---4---\n\n";
+
         list<no_def> nd_list;
         list<no_def> swp_list;
 
@@ -110,9 +124,13 @@ int main() {
             std::cout << "!" << val.val;
         }
         std::cout << std::endl;
+
+        std::cout << "---4---\n\n";
     }
 
     {
+        std::cout << "---5---\n\n";
+
         list<int> a;
         list<int> b;
 
@@ -133,6 +151,8 @@ int main() {
             std::cout << val << " ";
         }
         std::cout << std::endl;
+
+        std::cout << "---5---\n\n";
     }
     return 0;
 }
