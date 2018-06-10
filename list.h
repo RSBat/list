@@ -111,8 +111,8 @@ public:
     }
 
     list& operator=(const list<T>& other) {
-        clear();
-        for (const auto& val : other) { this->push_back(val); }
+        list cpy(other);
+        swap(cpy);
         return *this;
     }
 
@@ -137,10 +137,11 @@ public:
         if (sz == 0) { return; } // same as if (tail == nullptr || tail->prev == nullptr) { return; }
 
         tail->prev = tail->prev->prev;
-        if (tail->prev != nullptr) {
+        --sz;
+
+        if (sz != 0) {
             tail->prev->next = std::move(tail->prev->next->next);
         }
-        --sz;
     }
 
     T& back() {
@@ -281,8 +282,8 @@ public:
 
     void splice(const_iterator pos, list& other, const_iterator first, const_iterator last) {
         while (first != last) { // can be optimmized
-            pos = const_iterator(insert(pos, *last).ptr);
-            last = --const_iterator(other.erase(last).ptr);
+            pos = ++const_iterator(insert(pos, *first).ptr);
+            first = const_iterator(other.erase(first).ptr);
         }
     }
 

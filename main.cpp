@@ -127,6 +127,12 @@ int main() {
             std::cout << val << " ";
         }
         std::cout << std::endl;
+
+        a.clear();
+        for (auto val : a) {
+            std::cout << val << " ";
+        }
+        std::cout << std::endl;
     }
     return 0;
 }
