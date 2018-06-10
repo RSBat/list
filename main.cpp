@@ -198,6 +198,7 @@ int main() {
         std::cout << *it;
     }
 
+
     {
         list<double> dlist;
         for (int i = 0; i < 1000; i++) {
@@ -209,6 +210,37 @@ int main() {
                 dlist.pop_front();
             }
         }
+    }
+
+    {
+        std::cout << "---splice---\n\n";
+
+        list<int> ilist;
+        list<int> ilist2;
+
+        ilist.push_back(1);
+        ilist.push_back(2);
+        ilist.push_back(3);
+        ilist.push_back(4);
+
+        ilist2.push_back(5);
+        ilist2.push_back(6);
+        ilist2.push_back(7);
+        ilist2.push_back(8);
+
+        auto it1 = std::next(ilist.begin(), 2);
+        auto it2 = std::next(ilist2.begin());
+        auto it3 = std::next(ilist2.begin(), 3);
+
+        ilist.splice(it1, ilist2, it2, it3);
+
+        for (auto i : ilist) {
+            std::cout << i << " ";
+        }
+
+        std::cout << *it2 << std::endl;
+
+        std::cout << "---splice---\n\n";
     }
 
     return 0;

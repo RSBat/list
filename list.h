@@ -99,7 +99,6 @@ class list {
 
     mutable std::unique_ptr<node> head;
     mutable node* tail;
-    size_t sz;
 
     void insert(node* nd, const T& val) {
         std::unique_ptr<node> tmp_node = std::make_unique<node>(val);
@@ -122,7 +121,7 @@ public:
     using reverse_iterator = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-    list() noexcept : head(nullptr), tail(nullptr), sz(0) {}
+    list() noexcept : head(nullptr), tail(nullptr) {}
 
     list(const list<T>& other) :list() {
         for (const auto& val : other) { this->push_back(val); }
@@ -137,7 +136,7 @@ public:
     void push_back(const T& data) {
         if (tail == nullptr) { init_empty(); }
 
-        if (sz == 0) { // list is empty
+        if (empty()) { // list is empty
             std::unique_ptr<node> tmp_node = std::make_unique<node>(data);
             tmp_node->next = std::move(head);
             head = std::move(tmp_node);
@@ -145,27 +144,25 @@ public:
         } else { // we have elements
             insert(tail, data);
         }
-        ++sz;
     }
 
     void pop_back() {
-        if (sz == 0) { return; } // same as if (tail == nullptr || tail->prev == nullptr) { return; }
+        if (empty()) { return; } // same as if (tail == nullptr || tail->prev == nullptr) { return; }
 
         tail->prev = tail->prev->prev;
-        --sz;
 
-        if (sz != 0) {
+        if (!empty()) {
             tail->prev->next = std::move(tail->prev->next->next);
         }
     }
 
     T& back() {
-        assert(sz != 0); // same as assert(tail != nullptr && tail->prev != nullptr);
+        assert(!empty()); // same as assert(tail != nullptr && tail->prev != nullptr);
         return *(tail->prev->data);
     }
 
     const T& back() const {
-        assert(sz != 0); // same as assert(tail != nullptr && tail->prev != nullptr);
+        assert(!empty()); // same as assert(tail != nullptr && tail->prev != nullptr);
         return *(tail->prev->data);
     }
 
@@ -173,7 +170,7 @@ public:
         if (tail == nullptr) { init_empty(); }
 
         std::unique_ptr<node> tmp_node = std::make_unique<node>(data);
-        if (sz == 0) { // list is empty
+        if (empty()) { // list is empty
             tmp_node->next = std::move(head);
             head = std::move(tmp_node);
             tail->prev = head.get();
@@ -182,43 +179,37 @@ public:
             head = std::move(tmp_node);
             head->next->prev = head.get();
         }
-        ++sz;
     }
 
     void pop_front() {
-        if (sz == 0) { return; }
+        if (empty()) { return; }
 
         head = std::move(head->next);
         head->prev = nullptr;
-        --sz;
 
-        if (sz == 0) {
+        if (empty()) {
             tail->prev = nullptr;
         }
     }
 
     T& front() {
-        assert(sz != 0);
+        assert(!empty());
         return *(head->data);
     }
 
     const T& front() const {
-        assert(sz != 0);
+        assert(!empty());
         return *(head->data);
     }
 
     bool empty() const {
-        return sz == 0;
+        return tail == nullptr || tail->prev == nullptr;
     }
 
-    size_t size() const {
-        return sz;
-    }
 
     void clear() {
-        if (sz == 0) { return; }
+        if (empty()) { return; }
         head = std::move(tail->prev->next);
-        sz = 0;
     }
 
     iterator begin() const {
@@ -266,19 +257,18 @@ public:
 
         node* ptr = pos.ptr;
 
-        if (size() == 0) {
+        if (empty()) {
             push_back(val);
         } else if (ptr->prev == nullptr) {
             push_front(val);
         } else {
             insert(ptr, val);
-            sz++;
         }
         return iterator(ptr->prev);
     }
 
     iterator erase(const_iterator pos) {
-        assert(size() != 0);
+        assert(!empty());
 
         node* ptr = pos.ptr;
         if (ptr->prev == nullptr) {
@@ -288,7 +278,6 @@ public:
             node* nxt = ptr->next.get();
             ptr->next->prev = ptr->prev;
             ptr->prev->next = std::move(ptr->next); // ptr is deleted here!
-            sz--;
             return iterator(nxt);
         }
     }
@@ -302,16 +291,37 @@ public:
     }
 
     void splice(const_iterator pos, list& other, const_iterator first, const_iterator last) {
-        while (first != last) {
-            pos = ++insert(pos, *first);
-            first = other.erase(first);
+        if (first == last) { return; }
+
+        std::unique_ptr<node> tmp;
+        node* ptr_last = last.ptr->prev;
+        if (first.ptr->prev == nullptr) {
+            tmp = std::move(other.head);
+            other.head = std::move(last.ptr->prev->next);
+            last.ptr->prev = nullptr;
+        } else {
+            tmp = std::move(first.ptr->prev->next);
+            first.ptr->prev->next = std::move(last.ptr->prev->next);
+            last.ptr->prev = first.ptr->prev;
+            tmp->prev = nullptr;
+        }
+
+        if (pos.ptr->prev == nullptr) {
+            head->prev = ptr_last;
+            ptr_last->next = std::move(head);
+            head = std::move(tmp);
+            head->prev = nullptr;
+        } else {
+            ptr_last->next = std::move(pos.ptr->prev->next);
+            tmp->prev = ptr_last->next->prev;
+            pos.ptr->prev->next = std::move(tmp);
+            ptr_last->next->prev = ptr_last;
         }
     }
 
     void swap(list& other) {
         std::swap(head, other.head);
         std::swap(tail, other.tail);
-        std::swap(sz, other.sz);
     }
 };
 
