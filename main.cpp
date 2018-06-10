@@ -146,6 +146,13 @@ int main() {
         }
         std::cout << std::endl;
 
+        a.splice(a.begin(), b, b.begin(), b.end());
+        for (auto val : a) {
+            std::cout << val << " ";
+        }
+        std::cout << std::endl;
+
+
         a.clear();
         for (auto val : a) {
             std::cout << val << " ";
