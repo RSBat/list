@@ -70,12 +70,12 @@ class list {
             return (ptr->data).get();
         }
 
-        friend bool operator==(const iterator_impl& a, const iterator_impl& b) {
-            return a.ptr == b.ptr;
+        bool operator==(const iterator_impl& b) {
+            return ptr == b.ptr;
         }
 
-        friend bool operator!=(const iterator_impl& a, const iterator_impl& b) {
-            return !(a == b);
+        bool operator!=(const iterator_impl& b) {
+            return !(*this == b);
         }
 
     private:
@@ -95,6 +95,11 @@ public:
     list() : head(nullptr), tail(nullptr), sz(0) {}
 
     list(const list<T>& other) :list() {
+        for (const auto& val : other) { this->push_back(val); }
+    }
+
+    list& operator=(const list<T>& other) {
+        clear();
         for (const auto& val : other) { this->push_back(val); }
     }
 
@@ -193,6 +198,12 @@ public:
 
     size_t size() const {
         return sz;
+    }
+
+    void clear() {
+        if (sz == 0) { return; }
+        head = std::move(tail->prev->next);
+        sz = 0;
     }
 
     iterator begin() const {

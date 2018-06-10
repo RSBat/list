@@ -4,6 +4,16 @@
 #include <string>
 #include <vector>
 
+struct no_def {
+    no_def() = delete;
+
+    explicit no_def(int val) : val(val) {};
+
+    no_def(const no_def&) = default;
+
+    int val;
+};
+
 int main() {
     list<int> lst;
 
@@ -14,7 +24,7 @@ int main() {
     for (int i = 9; i >= 0; i--) {
         int j = lst.back();
         std::cout << j << std::endl;
-        //assert(i == lst.back());
+        assert(i == lst.back());
         lst.pop_back();
     }
 
@@ -25,7 +35,10 @@ int main() {
     string_list.push_front("hello");
     string_list.push_back("of strings");
 
-    std::cout << (string_list.begin()->back());
+    std::cout << (string_list.begin()->back()) << std::endl;
+    std::cout << *(string_list.begin()++) << std::endl;
+    std::cout << *(++string_list.begin()) << std::endl;
+    std::cout << *(--string_list.end()) << std::endl;
 
     for (const auto& word : string_list) {
         std::cout << word;
@@ -33,8 +46,14 @@ int main() {
     std::cout << std::endl;
 
     for (auto rit = string_list.rbegin(); rit != string_list.rend(); ++rit) {
-        std::cout << *rit << " ";
+        std::cout << *rit;
         std::cout.flush();
+    }
+    std::cout << std::endl;
+
+    while (!string_list.empty()) {
+        std::cout << string_list.front();
+        string_list.pop_front();
     }
     std::cout << std::endl;
 
@@ -53,6 +72,19 @@ int main() {
         }
         std::cout << std::endl;
     }
+
+    list<no_def> nd_list;
+
+    for (int i = 0; i < 15; i++) {
+        nd_list.push_back(no_def(i));
+    }
+
+    auto cpy = nd_list;
+
+    for (auto val : cpy) {
+        std::cout << val.val << " ";
+    }
+    std::cout << std::endl;
 
     return 0;
 }
