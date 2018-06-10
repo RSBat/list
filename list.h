@@ -87,12 +87,12 @@ class list {
         }
 
         template <bool is_other_const>
-        bool operator==(const iterator_impl<is_other_const>& b) {
+        bool operator==(const iterator_impl<is_other_const>& b) const {
             return ptr == b.ptr;
         }
 
         template <bool is_other_const>
-        bool operator!=(const iterator_impl<is_other_const>& b) {
+        bool operator!=(const iterator_impl<is_other_const>& b) const {
             return !(*this == b);
         }
     };

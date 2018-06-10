@@ -186,6 +186,8 @@ int main() {
 
         assert(it1 == it2);
         assert(it2 == it1);
+
+        ilist.begin() != ilist.end();
     }
     return 0;
 }
