@@ -37,6 +37,8 @@ class list {
         using reference = typename template_if<is_const, const T&, T&>::type;
         using value_type = T;
 
+        friend list;
+
         iterator_impl() = default;
         explicit iterator_impl(node* ptr) : ptr(ptr) {}
 
@@ -236,6 +238,57 @@ public:
 
     const_reverse_iterator crend() const {
         return std::make_reverse_iterator(cbegin());
+    }
+
+    iterator insert(const_iterator pos, const T& val) {
+        node* ptr = pos.ptr;
+
+        if (size() == 0) {
+            push_back(val);
+        } else if (ptr->prev == nullptr) {
+            push_front(val);
+        } else {
+            std::unique_ptr<node> tmp_node = std::make_unique<node>(val);
+            node* last = ptr->prev;
+            tmp_node->next = std::move(last->next);
+            tmp_node->prev = last;
+            last->next = std::move(tmp_node);
+            ptr->prev = last->next.get();
+            sz++;
+        }
+        return iterator(ptr->prev);
+    }
+
+    iterator erase(const_iterator pos) {
+        assert(size() != 0);
+
+        node* ptr = pos.ptr;
+        if (ptr->prev == nullptr) {
+            pop_front();
+            return begin();
+        } else {
+            node* nxt = ptr->next.get();
+            ptr->next->prev = ptr->prev;
+            ptr->prev->next = std::move(ptr->next); // ptr is deleted here!
+            sz--;
+            return iterator(nxt);
+        }
+    }
+
+    iterator erase(const_iterator first, const_iterator second) {
+        while (first != second) { // can be optimized
+            iterator it = erase(first);
+            first = const_iterator(it.ptr);
+        }
+
+        return iterator(first.ptr);
+    }
+
+    void splice(const_iterator pos, list& other, const_iterator first, const_iterator last) {
+        while (first != last) { // can be optimmized
+            pos = const_iterator(insert(pos, *last).ptr);
+            last = --const_iterator(other.erase(last).ptr);
+        }
     }
 
     void swap(list& other) {
