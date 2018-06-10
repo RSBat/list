@@ -237,7 +237,17 @@ public:
     const_reverse_iterator crend() const {
         return std::make_reverse_iterator(cbegin());
     }
+
+    void swap(list& other) {
+        std::swap(head, other.head);
+        std::swap(tail, other.tail);
+        std::swap(sz, other.sz);
+    }
 };
 
+template <typename T>
+void swap(list<T>& a, list<T>& b) {
+    a.swap(b);
+}
 
 #endif //LIST_LIST_H

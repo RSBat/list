@@ -74,14 +74,23 @@ int main() {
     }
 
     list<no_def> nd_list;
+    list<no_def> swp_list;
 
     for (int i = 0; i < 15; i++) {
         nd_list.push_back(no_def(i));
+        swp_list.push_back(no_def(i * 100));
     }
 
     auto cpy = nd_list;
 
+    swap(nd_list, swp_list);
+
     for (auto val : cpy) {
+        std::cout << val.val << " ";
+    }
+    std::cout << std::endl;
+
+    for (auto val : nd_list) {
         std::cout << val.val << " ";
     }
     std::cout << std::endl;
