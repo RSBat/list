@@ -97,8 +97,8 @@ class list {
         }
     };
 
-    std::unique_ptr<node> head;
-    node* tail;
+    mutable std::unique_ptr<node> head;
+    mutable node* tail;
     size_t sz;
 
     void insert(node* nd, const T& val) {
@@ -108,6 +108,12 @@ class list {
         tmp_node->prev = last;
         last->next = std::move(tmp_node);
         nd->prev = last->next.get();
+    }
+
+    void init_empty() const {
+        assert(tail == nullptr);
+        head = std::make_unique<node>();
+        tail = head.get();
     }
 
 public:
@@ -129,10 +135,7 @@ public:
     }
 
     void push_back(const T& data) {
-        if (tail == nullptr) {
-            head = std::make_unique<node>();
-            tail = head.get();
-        }
+        if (tail == nullptr) { init_empty(); }
 
         if (sz == 0) { // list is empty
             std::unique_ptr<node> tmp_node = std::make_unique<node>(data);
@@ -167,10 +170,7 @@ public:
     }
 
     void push_front(const T& data) {
-        if (tail == nullptr) {
-            head = std::make_unique<node>();
-            tail = head.get();
-        }
+        if (tail == nullptr) { init_empty(); }
 
         std::unique_ptr<node> tmp_node = std::make_unique<node>(data);
         if (sz == 0) { // list is empty
@@ -222,38 +222,48 @@ public:
     }
 
     iterator begin() const {
+        if (tail == nullptr) { init_empty(); }
         return iterator(head.get());
     }
 
     iterator end() const {
+        if (tail == nullptr) { init_empty(); }
         return iterator(tail);
     }
 
     const_iterator cbegin() const {
+        if (tail == nullptr) { init_empty(); }
         return const_iterator(head.get());
     }
 
     const_iterator cend() const {
+        if (tail == nullptr) { init_empty(); }
         return const_iterator(tail);
     }
 
     reverse_iterator rbegin() const {
+        if (tail == nullptr) { init_empty(); }
         return std::make_reverse_iterator(end());
     }
 
     reverse_iterator rend() const {
+        if (tail == nullptr) { init_empty(); }
         return std::make_reverse_iterator(begin());
     }
 
     const_reverse_iterator crbegin() const {
+        if (tail == nullptr) { init_empty(); }
         return std::make_reverse_iterator(cend());
     }
 
     const_reverse_iterator crend() const {
+        if (tail == nullptr) { init_empty(); }
         return std::make_reverse_iterator(cbegin());
     }
 
     iterator insert(const_iterator pos, const T& val) {
+        if (tail == nullptr) { init_empty(); }
+
         node* ptr = pos.ptr;
 
         if (size() == 0) {

@@ -189,5 +189,27 @@ int main() {
 
         ilist.begin() != ilist.end();
     }
+
+    {
+        list<int> ilist;
+        auto it = ilist.cend();
+        ilist.push_back(5);
+        --it;
+        std::cout << *it;
+    }
+
+    {
+        list<double> dlist;
+        for (int i = 0; i < 1000; i++) {
+            bool b = rand() & 1;
+            if (dlist.empty()) { b = true; }
+            if(b) {
+                dlist.push_back(rand());
+            } else {
+                dlist.pop_front();
+            }
+        }
+    }
+
     return 0;
 }
