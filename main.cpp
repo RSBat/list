@@ -177,5 +177,15 @@ int main() {
 
         std::cout << "---5---\n\n";
     }
+
+    {
+        list<int> ilist;
+        ilist.push_back(10); ilist.push_back(20);
+        auto it1 = ilist.begin();
+        auto it2 = ilist.cbegin();
+
+        assert(it1 == it2);
+        assert(it2 == it1);
+    }
     return 0;
 }

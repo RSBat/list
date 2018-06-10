@@ -31,7 +31,13 @@ class list {
     */
 
     template <bool is_const>
-    struct iterator_impl {
+    class iterator_impl {
+        node* ptr;
+
+        iterator_impl() = default;
+        explicit iterator_impl(node* ptr) : ptr(ptr) {}
+
+    public:
         using iterator_category = std::bidirectional_iterator_tag;
         using difference_type = long long;
         using pointer = typename std::conditional<is_const, const T*, T*>::type;
@@ -39,9 +45,6 @@ class list {
         using value_type = T;
 
         friend list;
-
-        iterator_impl() = default;
-        explicit iterator_impl(node* ptr) : ptr(ptr) {}
 
         template<bool is_other_const, typename  U = std::enable_if_t<is_const || !is_other_const>>
         iterator_impl(const iterator_impl<is_other_const>& other) :ptr(other.ptr) {}
@@ -82,16 +85,14 @@ class list {
             return (ptr->data).get();
         }
 
-        bool operator==(const iterator_impl& b) {
+        template <bool is_other_const>
+        bool operator==(const iterator_impl<is_other_const>& b) {
             return ptr == b.ptr;
         }
 
         bool operator!=(const iterator_impl& b) {
             return !(*this == b);
         }
-
-    private:
-        node* ptr;
     };
 
     std::unique_ptr<node> head;
