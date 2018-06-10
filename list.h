@@ -90,7 +90,8 @@ class list {
             return ptr == b.ptr;
         }
 
-        bool operator!=(const iterator_impl& b) {
+        template <bool is_other_const>
+        bool operator!=(const iterator_impl<is_other_const>& b) {
             return !(*this == b);
         }
     };
