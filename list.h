@@ -34,7 +34,6 @@ class list {
     class iterator_impl {
         node* ptr;
 
-        iterator_impl() = default;
         explicit iterator_impl(node* ptr) : ptr(ptr) {}
 
     public:
@@ -45,6 +44,8 @@ class list {
         using value_type = T;
 
         friend list;
+
+        iterator_impl() = default;
 
         template<bool is_other_const, typename  U = std::enable_if_t<is_const || !is_other_const>>
         iterator_impl(const iterator_impl<is_other_const>& other) :ptr(other.ptr) {}
