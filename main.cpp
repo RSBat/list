@@ -46,11 +46,11 @@ int main() {
         string_list.push_front("hello");
         string_list.push_back("of strings");
 
-        std::cout << (string_list.begin()->back()) << std::endl;
-        std::cout << *(string_list.begin()++) << std::endl;
-        std::cout << *(++string_list.begin()) << std::endl;
-        std::cout << *(--string_list.end()) << std::endl;
-        std::cout << *(std::prev(string_list.end())) << std::endl;
+        std::cout << (string_list.begin()->back()) << std::endl; // o
+        std::cout << *(string_list.begin()++) << std::endl; // hello
+        std::cout << *(++string_list.begin()) << std::endl; //
+        std::cout << *(--string_list.end()) << std::endl; // of strings
+        std::cout << *(std::prev(string_list.end())) << std::endl; // of strings
 
         for (const auto& word : string_list) {
             std::cout << word;
