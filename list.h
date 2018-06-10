@@ -33,7 +33,7 @@ class list {
     template <bool is_const>
     struct iterator_impl {
         using iterator_category = std::bidirectional_iterator_tag;
-        using difference_type = size_t;
+        using difference_type = long long;
         using pointer = typename std::conditional<is_const, const T*, T*>::type;
         using reference = typename std::conditional<is_const, const T&, T&>::type;
         using value_type = T;

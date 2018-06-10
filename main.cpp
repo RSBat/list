@@ -50,6 +50,7 @@ int main() {
         std::cout << *(string_list.begin()++) << std::endl;
         std::cout << *(++string_list.begin()) << std::endl;
         std::cout << *(--string_list.end()) << std::endl;
+        std::cout << *(std::prev(string_list.end())) << std::endl;
 
         for (const auto& word : string_list) {
             std::cout << word;
