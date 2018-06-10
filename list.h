@@ -113,6 +113,7 @@ public:
     list& operator=(const list<T>& other) {
         clear();
         for (const auto& val : other) { this->push_back(val); }
+        return *this;
     }
 
     void push_back(const T& data) {
