@@ -152,10 +152,25 @@ int main() {
         }
         std::cout << std::endl;
 
+        b.push_back(10);
+
+        // push_back 10
+        a.splice(a.end(), b, b.begin(), b.end());
+        for (auto val : a) {
+            std::cout << val << " ";
+        }
+        std::cout << std::endl;
+
+        // move everything before first
+        a.splice(a.begin(), a, ++a.begin(), a.end());
+        for (auto val : a) {
+            std::cout << val << " ";
+        }
+        std::cout << std::endl;
 
         a.clear();
         for (auto val : a) {
-            std::cout << val << " ";
+            assert(false);
         }
         std::cout << std::endl;
 

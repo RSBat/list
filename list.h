@@ -289,16 +289,10 @@ public:
     }
 
     void splice(const_iterator pos, list& other, const_iterator first, const_iterator last) {
-        if (first == last) { return; }
-
-        insert(pos, *first);
-        --pos;
-        --last;
-        std::unique_ptr<node> tmp = std::move(pos.ptr->next);
-        pos.ptr->next = std::move(first.ptr->next);
-        first.ptr->next = std::move(last.ptr->next);
-        last.ptr->next = std::move(tmp);
-        other.erase(first);
+        while (first != last) {
+            pos = ++insert(pos, *first);
+            first = other.erase(first);
+        }
     }
 
     void swap(list& other) {
