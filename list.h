@@ -19,6 +19,7 @@ class list {
         explicit node(const T& data) : data(std::make_unique<T>(data)), next(nullptr), prev(nullptr) {};
     };
 
+    /* for c++ < 17
     template <bool b, typename T1, typename T2>
     struct template_if {};
 
@@ -27,14 +28,14 @@ class list {
 
     template <typename T1, typename T2>
     struct template_if<false, T1, T2> { using type = T2; };
-
+    */
 
     template <bool is_const>
     struct iterator_impl {
         using iterator_category = std::bidirectional_iterator_tag;
         using difference_type = size_t;
-        using pointer = typename template_if<is_const, const T*, T*>::type;
-        using reference = typename template_if<is_const, const T&, T&>::type;
+        using pointer = typename std::conditional<is_const, const T*, T*>::type;
+        using reference = typename std::conditional<is_const, const T&, T&>::type;
         using value_type = T;
 
         friend list;
