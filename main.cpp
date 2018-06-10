@@ -243,5 +243,53 @@ int main() {
         std::cout << "---splice---\n\n";
     }
 
+    {
+        list<int> ilist;
+        ilist.push_back(1);
+        ilist.push_back(2);
+        ilist.push_back(3);
+        ilist.push_back(4);
+
+        ilist.clear();
+
+        assert(ilist.empty());
+        assert(ilist.begin() == ilist.end());
+    }
+
+    {
+        list<int> ilist;
+        ilist.push_back(1);
+        ilist.push_back(2);
+        ilist.push_back(3);
+        ilist.push_back(4);
+
+        ilist.clear();
+
+        while (!ilist.empty()) {
+            ilist.pop_back();
+        }
+
+        assert(ilist.empty());
+        assert(ilist.begin() == ilist.end());
+    }
+
+
+    {
+        list<int> ilist;
+        ilist.push_back(1);
+        ilist.push_back(2);
+        ilist.push_back(3);
+        ilist.push_back(4);
+
+        ilist.clear();
+
+        while (!ilist.empty()) {
+            ilist.pop_front();
+        }
+
+        assert(ilist.empty());
+        assert(ilist.begin() == ilist.end());
+    }
+
     return 0;
 }

@@ -210,6 +210,7 @@ public:
     void clear() {
         if (empty()) { return; }
         head = std::move(tail->prev->next);
+        tail->prev = nullptr;
     }
 
     iterator begin() const {
